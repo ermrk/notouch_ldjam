@@ -24,8 +24,7 @@ public class LineVisualization : MonoBehaviour
         {
             nonCenteredValue += (ControllerValues.GetSensorValueNormalized(sensors[i], minValuesToAccept) / normalizeFactor) * (i + 1) * 100;
         }
-        Debug.Log(nonCenteredValue);
-        transform.position = new Vector3(getXPosition(nonCenteredValue), startPosition.y, startPosition.z);
+        transform.position = new Vector3(startPosition.x, getYPosition(nonCenteredValue), startPosition.z);
     }
 
     float getNormalizeFactor()
@@ -42,15 +41,16 @@ public class LineVisualization : MonoBehaviour
         return totalSensorValue;
     }
 
-    float getXPosition(float nonCenteredValue)
+    float getYPosition(float nonCenteredValue)
     {
         if (nonCenteredValue < 100)
         {
-            return startPosition.x;
+            return startPosition.y;
         }
+
         float maxNonCenteredValue = 100 * (sensors.Length - 1);
         float fraction = (nonCenteredValue - 100) / maxNonCenteredValue;
-        float newPosition = 2 * maxBias * fraction - maxBias;
-        return startPosition.x + newPosition;
+        float newPosition = maxBias/2 * fraction;
+        return startPosition.y + newPosition;
     }
 }
