@@ -5,7 +5,8 @@ public class Engine : MonoBehaviour {
 
     public int[] sensors;
     public float minValuesToAccept = 0.5f;
-    public float force;
+    public float speed;
+    public float minSpeed;
 
     private Rigidbody rigidbody;
 
@@ -16,7 +17,7 @@ public class Engine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        rigidbody.AddForceAtPosition(transform.forward * force * calculateThrust(), this.transform.position);
+        transform.position += transform.forward * speed * calculateThrust() + transform.forward* minSpeed;
     }
 
     private float getNormalizeFactor()

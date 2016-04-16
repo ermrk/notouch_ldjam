@@ -8,6 +8,8 @@ public class LineVisualization : MonoBehaviour
     public float maxBias;
     public int[] sensors;
     public float minValuesToAccept = 0.5f;
+    public bool centered = false;
+    public bool horiznotal = false;
 
     // Use this for initialization
     void Start()
@@ -24,7 +26,13 @@ public class LineVisualization : MonoBehaviour
         {
             nonCenteredValue += (ControllerValues.GetSensorValueNormalized(sensors[i], minValuesToAccept) / normalizeFactor) * (i + 1) * 100;
         }
-        transform.position = new Vector3(startPosition.x, getYPosition(nonCenteredValue), startPosition.z);
+        if (!horiznotal)
+        {
+            transform.position = new Vector3(startPosition.x, getYPosition(nonCenteredValue), startPosition.z);
+        }
+        else {
+            transform.position = new Vector3(getXPosition(nonCenteredValue), startPosition.y, startPosition.z);
+        }
     }
 
     float getNormalizeFactor()
@@ -50,7 +58,34 @@ public class LineVisualization : MonoBehaviour
 
         float maxNonCenteredValue = 100 * (sensors.Length - 1);
         float fraction = (nonCenteredValue - 100) / maxNonCenteredValue;
-        float newPosition = maxBias/2 * fraction;
+        float newPosition;
+        if (!centered)
+        {
+            newPosition = maxBias / 2 * fraction;
+        }
+        else {
+            newPosition = 2 * maxBias * fraction - maxBias;
+        }
         return startPosition.y + newPosition;
+    }
+
+    float getXPosition(float nonCenteredValue)
+    {
+        if (nonCenteredValue < 100)
+        {
+            return startPosition.x;
+        }
+        float maxNonCenteredValue = 100 * (sensors.Length - 1);
+        float fraction = (nonCenteredValue - 100) / maxNonCenteredValue;
+        float newPosition;
+        if (!centered)
+        {
+            newPosition = maxBias / 2 * fraction;
+        }
+        else
+        {
+            newPosition = 2 * maxBias * fraction - maxBias;
+        }
+        return startPosition.x + newPosition;
     }
 }
