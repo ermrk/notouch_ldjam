@@ -11,11 +11,14 @@ public class Engine : MonoBehaviour
     public bool stop = false;
 
     private Rigidbody rigidbody;
+    Animator animator;
+    private float realSpeed = 0.0f;
 
     // Use this for initialization
     void Start()
     {
         this.rigidbody = GetComponentInParent<Rigidbody>();
+        this.animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -23,8 +26,22 @@ public class Engine : MonoBehaviour
     {
         if (!stop)
         {
-            transform.position += transform.forward * speed * Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1) + transform.forward * minSpeed;
+            float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1);
+            
+
+            if (speedInput > realSpeed)
+            {
+                realSpeed += 0.01f;
+            }
+            if (speedInput < realSpeed)
+            {
+                realSpeed -= 0.01f;
+            }
+            transform.position += transform.forward * speed * realSpeed + transform.forward * minSpeed;
+            animator.Play("Shapeshift", 0, 1 - realSpeed);
+            animator.speed = 0;
         }
+        minSpeed += 0.01f;
     }
 
     private float getNormalizeFactor()
