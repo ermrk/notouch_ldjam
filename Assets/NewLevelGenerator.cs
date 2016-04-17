@@ -27,9 +27,16 @@ public class NewLevelGenerator : MonoBehaviour
     int segment = 0;
     int bias = 0;
     int lastSegmentOfObstacle = 0;
+    float colorTransition = 2;
+    int colorSegment = -1;
 
     Queue<Directions> segments = new Queue<Directions>();
     GameObject vehicle;
+    GameObject mainCamera;
+
+    public Color[] colors;
+    Color from;
+    Color to;
 
     // Use this for initialization
     void Start()
@@ -37,16 +44,37 @@ public class NewLevelGenerator : MonoBehaviour
         generate();
         build();
         vehicle = GameObject.FindGameObjectWithTag("Vehicle");
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (vehicle.transform.position.z > (segment - numberOfSegments/2) * segmentLength)
+        if (vehicle.transform.position.z > (segment - numberOfSegments / 2) * segmentLength)
         {
             Debug.Log("GENERATING");
             generate();
             build();
+        }
+        if (vehicle.transform.position.z > (segmentLength * numberOfSegments *  (colorSegment+1)) - 1000)
+        {
+            if (colorSegment == -1)
+            {
+                colorSegment++;
+                mainCamera.GetComponent<Camera>().backgroundColor = colors[((colorSegment * 3) + 2) % colors.Length];
+            }
+            else
+            {
+                from = colors[((colorSegment * 3) + 2) % colors.Length];
+                to = colors[(((colorSegment + 1) * 3) + 2) % colors.Length];
+                colorSegment++;
+                colorTransition = 0;
+            }
+        }
+        if (colorTransition < 1f)
+        {
+            mainCamera.GetComponent<Camera>().backgroundColor = Color.Lerp(from, to, colorTransition);
+            colorTransition += 0.01f;
         }
     }
 
@@ -83,6 +111,8 @@ public class NewLevelGenerator : MonoBehaviour
                     blockRight = GameObject.Instantiate(objectToGenerate, new Vector3((bias + 1) * segmentWidth + pathWidth * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                     blockLeft.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
                     blockRight.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
+                    blockLeft.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
+                    blockRight.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
                     generated = generateObstacles(bias, segment, lastSegmentOfObstacle, Directions.STRAIGHT);
                     if (generated)
                     {
@@ -98,6 +128,8 @@ public class NewLevelGenerator : MonoBehaviour
                     blockRight = GameObject.Instantiate(objectToGenerate, new Vector3((bias + 1) * segmentWidth + pathWidth * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                     blockLeft.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
                     blockRight.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
+                    blockLeft.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
+                    blockRight.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
                     bias--;
                     generated = generateObstacles(bias, segment, lastSegmentOfObstacle, Directions.LEFT);
                     if (generated)
@@ -114,6 +146,8 @@ public class NewLevelGenerator : MonoBehaviour
                     blockRight = GameObject.Instantiate(objectToGenerate, new Vector3((bias + 2) * segmentWidth + pathWidth * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                     blockLeft.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
                     blockRight.transform.localScale = new Vector3(segmentWidth, 100, segmentLength);
+                    blockLeft.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
+                    blockRight.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3) % colors.Length];
                     bias++;
                     generated = generateObstacles(bias, segment, lastSegmentOfObstacle, Directions.RIGHT);
                     if (generated)
@@ -144,7 +178,7 @@ public class NewLevelGenerator : MonoBehaviour
     void buildObstacle(int bias, int segment, Directions direction)
     {
         Transform obstacle;
-        float obstacleWidth = Random.RandomRange(2, 4);
+        float obstacleWidth = Random.Range(2, 4);
         int offset = 0;
         if (direction == Directions.LEFT)
         {
@@ -159,14 +193,17 @@ public class NewLevelGenerator : MonoBehaviour
             case 0:
                 obstacle = GameObject.Instantiate(objectToGenerate, new Vector3((bias - (obstacleWidth / 2) + offset) * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                 obstacle.transform.localScale = new Vector3(segmentWidth * obstacleWidth, 100, segmentLength);
+                obstacle.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3 + 1) % colors.Length];
                 break;
             case 1:
                 obstacle = GameObject.Instantiate(objectToGenerate, new Vector3((bias + (obstacleWidth / 2) - 0.5f + offset) * segmentWidth - pathWidth * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                 obstacle.transform.localScale = new Vector3(segmentWidth * obstacleWidth, 100, segmentLength);
+                obstacle.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3 + 1) % colors.Length];
                 break;
             case 2:
                 obstacle = GameObject.Instantiate(objectToGenerate, new Vector3((bias - (obstacleWidth / 2) + 0.5f + offset) * segmentWidth + pathWidth * segmentWidth, 0, segment * segmentLength), Quaternion.identity) as Transform;
                 obstacle.transform.localScale = new Vector3(segmentWidth * obstacleWidth, 100, segmentLength);
+                obstacle.GetComponent<Renderer>().material.color = colors[((segment / numberOfSegments) * 3 + 1) % colors.Length];
                 break;
         }
     }
