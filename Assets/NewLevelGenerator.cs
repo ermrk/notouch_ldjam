@@ -24,23 +24,30 @@ public class NewLevelGenerator : MonoBehaviour
     public float segmentWidth;
     public float segmentLength;
     public int pathWidth;
-
-    Vector3 startPosition;
+    int segment = 0;
+    int bias = 0;
+    int lastSegmentOfObstacle = 0;
 
     Queue<Directions> segments = new Queue<Directions>();
+    GameObject vehicle;
 
     // Use this for initialization
     void Start()
     {
-        startPosition = transform.position;
         generate();
         build();
+        vehicle = GameObject.FindGameObjectWithTag("Vehicle");
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (vehicle.transform.position.z > (segment - numberOfSegments/2) * segmentLength)
+        {
+            Debug.Log("GENERATING");
+            generate();
+            build();
+        }
     }
 
     void generate()
@@ -64,9 +71,6 @@ public class NewLevelGenerator : MonoBehaviour
 
     void build()
     {
-        int segment = 0;
-        int bias = 0;
-        int lastSegmentOfObstacle = 0;
         bool generated;
         while (segments.Count > 0)
         {
