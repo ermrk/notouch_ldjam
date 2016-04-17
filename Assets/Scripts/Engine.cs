@@ -20,8 +20,10 @@ public class Engine : MonoBehaviour
     void Start()
     {
         this.rigidbody = GetComponentInParent<Rigidbody>();
-        foreach (Animator animatorTemp in GetComponentsInChildren<Animator>()) {
-            if (animatorTemp.gameObject.name == "Geometry") {
+        foreach (Animator animatorTemp in GetComponentsInChildren<Animator>())
+        {
+            if (animatorTemp.gameObject.name == "Geometry")
+            {
                 animator = animatorTemp;
                 break;
             }
@@ -50,7 +52,7 @@ public class Engine : MonoBehaviour
             }
             mainCamera.GetComponent<Camera>().fieldOfView = 60 + 20 * realSpeed;
 
-            mainCamera.GetComponent<Animator>().speed =  1-realSpeed;
+            mainCamera.GetComponent<Animator>().speed = 1 - realSpeed;
             transform.position += transform.forward * speed * realSpeed + transform.forward * minSpeed;
             animator.Play("Shapeshift", 0, 1 - realSpeed);
             animator.speed = 0;
