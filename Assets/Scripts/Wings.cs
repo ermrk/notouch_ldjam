@@ -8,13 +8,24 @@ public class Wings : MonoBehaviour
     public float minValuesToAccept = 0.5f;
     public float force;
     public bool stop = false;
+    private float realRotation = 0.0f;
+    private float rotation = 0.0f;
 
     private Rigidbody rigidbody;
+    private Transform geometry;
+    private GameObject mainCamera;
 
     // Use this for initialization
     void Start()
     {
         this.rigidbody = GetComponentInParent<Rigidbody>();
+        for (int i = 0; i < transform.childCount; i++) {
+            Transform gameObject = transform.GetChild(i);
+            if (gameObject.name == "Geometry") {
+                geometry = gameObject;
+            }
+        }
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     // Update is called once per frame
@@ -22,7 +33,19 @@ public class Wings : MonoBehaviour
     {
         if (!stop)
         {
-            transform.position += transform.right * force * Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
+            rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
+            transform.position += transform.right * force * rotation;
+
+            if (rotation > realRotation)
+            {
+                realRotation += 0.1f;
+            }
+            if (rotation < realRotation)
+            {
+                realRotation -= 0.1f;
+            }
+            geometry.eulerAngles = new Vector3(-30 * realRotation, 270, 0);
+            mainCamera.transform.eulerAngles = new Vector3(2.2159f , 0, -1f * realRotation);
         }
     }
 
