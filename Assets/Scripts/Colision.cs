@@ -14,14 +14,15 @@ public class Colision : MonoBehaviour {
 	}
 
     void OnTriggerEnter(Collider col) {
-        Debug.Log("Collision");
         if (col.gameObject.tag == "Obstacle" || col.gameObject.tag == "Rock")
         {
             GetComponent<Engine>().stop = true;
             GetComponent<Wings>().stop = true;
             GetComponent<Rigidbody>().freezeRotation = true;
-            GetComponentInChildren<Renderer>().enabled = false;
             GetComponentInChildren<ParticleSystem>().Play();
+            foreach (Renderer renderer in GetComponentsInChildren<Renderer>()) {
+                renderer.enabled = false;
+            }
         }
     }
 }
