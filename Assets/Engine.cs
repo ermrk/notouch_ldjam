@@ -1,23 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Engine : MonoBehaviour {
+public class Engine : MonoBehaviour
+{
 
     public int[] sensors;
-    public float minValuesToAccept = 0.5f;
+    public float minValuesToAccept = 0.2f;
     public float speed;
     public float minSpeed;
+    public bool stop = false;
 
     private Rigidbody rigidbody;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         this.rigidbody = GetComponentInParent<Rigidbody>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        transform.position += transform.forward * speed * calculateThrust() + transform.forward* minSpeed;
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (!stop)
+        {
+            transform.position += transform.forward * speed * Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1) + transform.forward * minSpeed;
+        }
     }
 
     private float getNormalizeFactor()
@@ -34,7 +41,8 @@ public class Engine : MonoBehaviour {
         return totalSensorValue;
     }
 
-    private float calculateThrust() {
+    private float calculateThrust()
+    {
         float nonCenteredValue = 0.0f;
         float normalizeFactor = getNormalizeFactor();
         for (int i = 0; i < sensors.Length; i++)

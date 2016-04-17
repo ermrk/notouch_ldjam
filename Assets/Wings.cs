@@ -7,6 +7,7 @@ public class Wings : MonoBehaviour
     public int[] sensors;
     public float minValuesToAccept = 0.5f;
     public float force;
+    public bool stop = false;
 
     private Rigidbody rigidbody;
 
@@ -19,7 +20,10 @@ public class Wings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += transform.right * force * calculateSteering();
+        if (!stop)
+        {
+            transform.position += transform.right * force * Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
+        }
     }
 
 
