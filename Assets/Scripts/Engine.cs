@@ -15,6 +15,7 @@ public class Engine : MonoBehaviour
     private float realSpeed = 0.0f;
     private GameObject mainCamera;
     private Vector3 cameraPosition;
+    private ParticleSystem trail;
 
     // Use this for initialization
     void Start()
@@ -30,6 +31,7 @@ public class Engine : MonoBehaviour
         }
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         mainCamera.GetComponent<Animator>().Play("Shake", 0, 0);
+        trail = GameObject.FindGameObjectWithTag("Trail").GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -56,8 +58,17 @@ public class Engine : MonoBehaviour
             transform.position += transform.forward * speed * realSpeed + transform.forward * minSpeed;
             animator.Play("Shapeshift", 0, 1 - realSpeed);
             animator.speed = 0;
+            var emission = trail.emission;
+            var rate = emission.rate;
+            rate.constantMax = 12000* realSpeed+8000;
+            emission.rate = rate;
+            var shape =  trail.shape;
+            var angle = shape.angle;
+            angle = 4 + 8 * (1-realSpeed);
+            shape.angle = angle;
+            trail.startSpeed = 2.5f + 2.5f * realSpeed;
         }
-        minSpeed += 0.01f;
+        minSpeed += 0.02f;
     }
 
     private float getNormalizeFactor()
