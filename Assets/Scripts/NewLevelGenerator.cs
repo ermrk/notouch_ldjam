@@ -49,7 +49,7 @@ public class NewLevelGenerator : MonoBehaviour
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         foreach (GameObject rock in GameObject.FindGameObjectsWithTag("Rock"))
         {
-            rock.GetComponent<Renderer>().material.color = colors[(((segment / numberOfSegments) - 1) * 3) % colors.Length];
+            rock.GetComponent<Renderer>().material.SetColor("_EmissionColor", colors[(((segment / numberOfSegments) - 1) * 3) % colors.Length]);
         }
     }
 
