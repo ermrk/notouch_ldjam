@@ -7,16 +7,25 @@ public class Score : MonoBehaviour {
     GameObject vehicle;
     Text scoreText;
     Text highScoreText;
+    AudioSource highScoreAudio;
+    ParticleSystem particleSystem;
     float score;
     int highScore;
     bool stop;
+    bool saied;
+    bool highscoreNull;
 
     // Use this for initialization
     void Start() {
         vehicle = GameObject.FindGameObjectWithTag("Vehicle");
         scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
         highScoreText = GameObject.FindGameObjectWithTag("Highscore").GetComponent<Text>();
+        highScoreAudio = GameObject.FindGameObjectWithTag("Highscore").GetComponent<AudioSource>();
+        particleSystem = GameObject.FindGameObjectWithTag("Highscore").GetComponent<ParticleSystem>();
         highScore = PlayerPrefs.GetInt("Highscore", 0);
+        if (highScore == 0) {
+            highscoreNull = true;
+        }
         highScoreText.text = "High score: " + (int)highScore + " m";
     }
 
@@ -28,6 +37,11 @@ public class Score : MonoBehaviour {
             scoreText.text = "Distance: " + (int)score + " m";
             if (score > highScore)
             {
+                if (!saied && !highscoreNull){
+                    highScoreAudio.Play();
+                    particleSystem.Play();
+                    saied = true;
+                }
                 highScore = (int)score;
                 highScoreText.text = "High score: " + highScore + " m";
             }
