@@ -19,9 +19,11 @@ public class Wings : MonoBehaviour
     void Start()
     {
         this.rigidbody = GetComponentInParent<Rigidbody>();
-        for (int i = 0; i < transform.childCount; i++) {
+        for (int i = 0; i < transform.childCount; i++)
+        {
             Transform gameObject = transform.GetChild(i);
-            if (gameObject.name == "Geometry") {
+            if (gameObject.name == "Geometry")
+            {
                 geometry = gameObject;
             }
         }
@@ -34,18 +36,18 @@ public class Wings : MonoBehaviour
         if (!stop)
         {
             rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
-            transform.position += transform.right * force * rotation;
+            transform.position += transform.right * force * rotation * Time.deltaTime;
 
             if (rotation > realRotation)
             {
-                realRotation += 0.1f;
+                realRotation += 5f*Time.deltaTime;
             }
             if (rotation < realRotation)
             {
-                realRotation -= 0.1f;
+                realRotation -= 5*Time.deltaTime;
             }
             geometry.eulerAngles = new Vector3(-30 * realRotation, 270, 0);
-            mainCamera.transform.eulerAngles = new Vector3(2.2159f , 0, -1f * realRotation);
+            mainCamera.transform.eulerAngles = new Vector3(2.2159f, 0, -1f * realRotation);
         }
     }
 

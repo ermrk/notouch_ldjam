@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Colision : MonoBehaviour {
 
     Text gameOver;
-    int blinking = 0;
+    float blinking = 0;
     bool startBlinking;
     AudioSource explosion;
     Score score;
@@ -21,7 +21,7 @@ public class Colision : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (startBlinking == true) {
-            blinking++;
+            blinking+=15*Time.deltaTime;
             if (blinking > 10) {
                 gameOver.text="";
             }
@@ -29,7 +29,7 @@ public class Colision : MonoBehaviour {
                 blinking = 0;
                 gameOver.text = "Game Over";
             }
-            if (Input.anyKey) {
+            if (Input.anyKeyDown) {
                 SceneManager.LoadScene("GameScene");
             }
         }

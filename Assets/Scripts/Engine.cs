@@ -42,20 +42,20 @@ public class Engine : MonoBehaviour
             float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1);
             if (speedInput > realSpeed)
             {
-                realSpeed += 0.02f;
+                realSpeed += 1.2f*Time.deltaTime;
             }
             if (speedInput < realSpeed)
             {
                 if (Input.GetAxis("Speed") < -0.5f || Input.GetAxis("Speed Gamepad") < -0.5f)
                 {
-                    realSpeed -= 0.02f;
+                    realSpeed -= 1.2f * Time.deltaTime;
                 }
-                realSpeed -= 0.01f;
+                realSpeed -= 0.8f * Time.deltaTime;
             }
             mainCamera.GetComponent<Camera>().fieldOfView = 60 + 20 * realSpeed;
 
             mainCamera.GetComponent<Animator>().speed = 1 - realSpeed;
-            transform.position += transform.forward * speed * realSpeed + transform.forward * minSpeed;
+            transform.position += (transform.forward * speed * realSpeed + transform.forward * minSpeed) * Time.deltaTime;
             animator.Play("Shapeshift", 0, 1 - realSpeed);
             animator.speed = 0;
             var emission = trail.emission;
@@ -69,7 +69,7 @@ public class Engine : MonoBehaviour
             trail.startSpeed = 2.5f + 2.5f * realSpeed;
             GetComponent<AudioSource>().pitch = basePitch + realSpeed * 0.5f;
             GetComponent<AudioSource>().volume = 0.8f + realSpeed * 0.2f;
-            basePitch += realSpeed*0.00002f;
+            basePitch += realSpeed*0.0005f*Time.deltaTime;
             music.pitch = basePitch;
             music.volume = 0.80f + realSpeed * 0.2f;
         }
@@ -78,7 +78,7 @@ public class Engine : MonoBehaviour
             music.volume = 0.80f;
             music.pitch = basePitch;
         }
-        minSpeed += 0.02f;
+        minSpeed += 0.04f*30f;
     }
 
     private float getNormalizeFactor()
