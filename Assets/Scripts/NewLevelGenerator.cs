@@ -177,7 +177,8 @@ public class NewLevelGenerator : MonoBehaviour
 
     bool generateObstacles(int bias, int segment, int lastSegmentOfObstacles, Directions direction)
     {
-        float probability = 1.0f - (1.0f / lastSegmentOfObstacles);
+        lastSegmentOfObstacles /= 2;
+        float probability = 1.0f - (1.0f / (lastSegmentOfObstacles));
         if (Random.Range(0.0f, 1.0f) < probability)
         {
             buildObstacle(bias, segment, direction);

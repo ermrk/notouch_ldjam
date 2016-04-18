@@ -10,17 +10,16 @@ public class Engine : MonoBehaviour
     public float minSpeed;
     public bool stop = false;
 
-    private Rigidbody rigidbody;
     Animator animator;
     private float realSpeed = 0.0f;
     private GameObject mainCamera;
-    private Vector3 cameraPosition;
     private ParticleSystem trail;
+    private float basePitch = 0.98f;
+    private AudioSource music;
 
     // Use this for initialization
     void Start()
     {
-        this.rigidbody = GetComponentInParent<Rigidbody>();
         foreach (Animator animatorTemp in GetComponentsInChildren<Animator>())
         {
             if (animatorTemp.gameObject.name == "Geometry")
@@ -30,6 +29,7 @@ public class Engine : MonoBehaviour
             }
         }
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
         mainCamera.GetComponent<Animator>().Play("Shake", 0, 0);
         trail = GameObject.FindGameObjectWithTag("Trail").GetComponent<ParticleSystem>();
     }
@@ -60,13 +60,23 @@ public class Engine : MonoBehaviour
             animator.speed = 0;
             var emission = trail.emission;
             var rate = emission.rate;
-            rate.constantMax = 12000* realSpeed+8000;
+            rate.constantMax = 12000 * realSpeed + 8000;
             emission.rate = rate;
-            var shape =  trail.shape;
+            var shape = trail.shape;
             var angle = shape.angle;
-            angle = 4 + 8 * (1-realSpeed);
+            angle = 4 + 8 * (1 - realSpeed);
             shape.angle = angle;
             trail.startSpeed = 2.5f + 2.5f * realSpeed;
+            GetComponent<AudioSource>().pitch = basePitch + realSpeed * 0.5f;
+            GetComponent<AudioSource>().volume = 0.8f + realSpeed * 0.2f;
+            basePitch += realSpeed*0.00002f;
+            music.pitch = basePitch;
+            music.volume = 0.80f + realSpeed * 0.2f;
+        }
+        else {
+            GetComponent<AudioSource>().volume -= 0.1f;
+            music.volume = 0.80f;
+            music.pitch = basePitch;
         }
         minSpeed += 0.02f;
     }

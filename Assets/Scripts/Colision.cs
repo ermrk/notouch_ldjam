@@ -8,10 +8,14 @@ public class Colision : MonoBehaviour {
     Text gameOver;
     int blinking = 0;
     bool startBlinking;
+    AudioSource explosion;
+    Score score;
 
 	// Use this for initialization
 	void Start () {
         gameOver = GameObject.FindGameObjectWithTag("GameOver").GetComponent<Text>();
+        explosion = GameObject.FindGameObjectWithTag("Explosion").GetComponent<AudioSource>();
+        score = GameObject.FindGameObjectWithTag("Score").GetComponent<Score>();
     }
 	
 	// Update is called once per frame
@@ -37,12 +41,21 @@ public class Colision : MonoBehaviour {
             GetComponent<Engine>().stop = true;
             GetComponent<Wings>().stop = true;
             GetComponent<Rigidbody>().freezeRotation = true;
-            GetComponentInChildren<ParticleSystem>().Play();
+            foreach (ParticleSystem particleSystem in GetComponentsInChildren<ParticleSystem>()) {
+                if (particleSystem.name == "Particle System") {
+                    particleSystem.Play();
+                }
+            }
             foreach (Renderer renderer in GetComponentsInChildren<Renderer>()) {
+                if (renderer.gameObject.name == "Particle System") {
+                    continue;
+                }
                 renderer.enabled = false;
             }
             gameOver.text = "Game Over";
             startBlinking = true;
+            explosion.Play();
+            score.saveHighScore();
         }
     }
 }
