@@ -35,7 +35,7 @@ public class Wings : MonoBehaviour
     {
         if (!stop)
         {
-            rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
+            rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering") + Input.acceleration.x*2, -1, 1);
             transform.position += transform.right * force * rotation * Time.deltaTime;
 
             if (rotation > realRotation)

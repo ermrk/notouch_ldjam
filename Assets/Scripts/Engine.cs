@@ -9,6 +9,7 @@ public class Engine : MonoBehaviour
     public float speed;
     public float minSpeed;
     public bool stop = false;
+    float touch = 1;
 
     Animator animator;
     private float realSpeed = 0.0f;
@@ -37,12 +38,20 @@ public class Engine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.touchCount > 0)
+        {
+            touch = -1;
+        }
+        else
+        {
+            touch = 1;
+        }
         if (!stop)
         {
-            float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1);
+            float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad") + touch, 0, 1);
             if (speedInput > realSpeed)
             {
-                realSpeed += 1.2f*Time.deltaTime;
+                realSpeed += 1.2f * Time.deltaTime;
             }
             if (speedInput < realSpeed)
             {
@@ -69,7 +78,7 @@ public class Engine : MonoBehaviour
             trail.startSpeed = 2.5f + 2.5f * realSpeed;
             GetComponent<AudioSource>().pitch = basePitch + realSpeed * 0.5f;
             GetComponent<AudioSource>().volume = 0.8f + realSpeed * 0.2f;
-            basePitch += realSpeed*0.0005f*Time.deltaTime;
+            basePitch += realSpeed * 0.0005f * Time.deltaTime;
             music.pitch = basePitch;
             music.volume = 0.80f + realSpeed * 0.2f;
         }
@@ -78,7 +87,7 @@ public class Engine : MonoBehaviour
             music.volume = 0.80f;
             music.pitch = basePitch;
         }
-        minSpeed += 0.04f*30f;
+        minSpeed += 0.04f * 30f;
     }
 
     private float getNormalizeFactor()
