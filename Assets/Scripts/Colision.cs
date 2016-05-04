@@ -10,12 +10,14 @@ public class Colision : MonoBehaviour {
     bool startBlinking;
     AudioSource explosion;
     Score score;
+    AiPlayer aiPlayer;
 
 	// Use this for initialization
 	void Start () {
         gameOver = GameObject.FindGameObjectWithTag("GameOver").GetComponent<Text>();
         explosion = GameObject.FindGameObjectWithTag("Explosion").GetComponent<AudioSource>();
         score = GameObject.FindGameObjectWithTag("Score").GetComponent<Score>();
+        aiPlayer = GameObject.FindGameObjectWithTag("AIPlayer").GetComponent<AiPlayer>();
     }
 	
 	// Update is called once per frame
@@ -32,6 +34,8 @@ public class Colision : MonoBehaviour {
             if (Input.anyKeyDown) {
                 SceneManager.LoadScene("GameScene");
             }
+            aiPlayer.newAI();
+            SceneManager.LoadScene("GameScene");
         }
 	}
 

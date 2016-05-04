@@ -33,7 +33,8 @@ public class Score : MonoBehaviour {
     void Update() {
         if (!stop)
         {
-            score = Mathf.Clamp(vehicle.transform.position.z - 3000, 0, float.MaxValue);
+            //score = Mathf.Clamp(vehicle.transform.position.z - 3000, 0, float.MaxValue);
+            score = Mathf.Clamp(vehicle.transform.position.z, 0, float.MaxValue);
             scoreText.text = "Distance: " + (int)score + " m";
             if (score > highScore)
             {
@@ -52,5 +53,9 @@ public class Score : MonoBehaviour {
         stop = true;
         PlayerPrefs.SetInt("Highscore", highScore);
         PlayerPrefs.Save();
+    }
+
+    public float getScore() {
+        return score;
     }
 }

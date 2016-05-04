@@ -16,6 +16,7 @@ public class Engine : MonoBehaviour
     private ParticleSystem trail;
     private float basePitch = 0.98f;
     private AudioSource music;
+    AiPlayer aiPlayer;
 
     // Use this for initialization
     void Start()
@@ -32,6 +33,7 @@ public class Engine : MonoBehaviour
         music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
         mainCamera.GetComponent<Animator>().Play("Shake", 0, 0);
         trail = GameObject.FindGameObjectWithTag("Trail").GetComponent<ParticleSystem>();
+        aiPlayer = GameObject.FindGameObjectWithTag("AIPlayer").GetComponent<AiPlayer>();
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class Engine : MonoBehaviour
     {
         if (!stop)
         {
-            float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad"), 0, 1);
+            float speedInput = Mathf.Clamp(calculateThrust() + Input.GetAxis("Speed") + Input.GetAxis("Speed Gamepad")+ aiPlayer.getThrust(), 0, 1);
             if (speedInput > realSpeed)
             {
                 realSpeed += 1.2f*Time.deltaTime;

@@ -14,6 +14,7 @@ public class Wings : MonoBehaviour
     private Rigidbody rigidbody;
     private Transform geometry;
     private GameObject mainCamera;
+    AiPlayer aiPlayer;
 
     // Use this for initialization
     void Start()
@@ -28,6 +29,7 @@ public class Wings : MonoBehaviour
             }
         }
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        aiPlayer = GameObject.FindGameObjectWithTag("AIPlayer").GetComponent<AiPlayer>();
     }
 
     // Update is called once per frame
@@ -35,7 +37,7 @@ public class Wings : MonoBehaviour
     {
         if (!stop)
         {
-            rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering"), -1, 1);
+            rotation = Mathf.Clamp(calculateSteering() + Input.GetAxis("Steering Gamepad") + Input.GetAxis("Steering")+ aiPlayer.getStearing(), -1, 1);
             transform.position += transform.right * force * rotation * Time.deltaTime;
 
             if (rotation > realRotation)
