@@ -14,10 +14,19 @@ public class Neuron {
 
     public void output() {
         for (int i = 0; i < outputNeurons.Count; i++) {
-            float signalToSend = Sigmoid(addedSignal * outputWeights[i]);
+            float signalToSend = Heaviside(addedSignal) * outputWeights[i];
             outputNeurons[i].input(signalToSend);
         }
         addedSignal = 0;
+    }
+
+    private int Heaviside(float x)
+    {
+        if (x <= 0)
+        {
+            return -1;
+        }
+        return 1;
     }
 
     private float Sigmoid(float x)
@@ -33,7 +42,7 @@ public class Neuron {
     public float getAddedSignal() {
         float toReturn = addedSignal;
         addedSignal = 0;
-        return Sigmoid(toReturn);
+        return Heaviside(toReturn);
     }
 
     public void setWeight(int connection, float weight) {

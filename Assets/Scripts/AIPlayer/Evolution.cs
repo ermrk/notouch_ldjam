@@ -8,7 +8,6 @@ public class Evolution
     List<Individual> generation = new List<Individual>();
     List<float> bestOfLast = new List<float>();
 
-    Random random = new Random();
     AiPlayer aiPlayer;
 
     int index = 0;
@@ -99,9 +98,9 @@ public class Evolution
     Individual generateIndividual()
     {
         string code = "";
-        for (int i = 0; i < 60 * 60 + 60 * 60 + 60 * 60 + 60 * 60 + 60 * 60 + 60 * 2; i++)
+        for (int i = 0; i < 100 * 100 + 100 * 2; i++)
         {
-            code += GetRandomNumber(-5.0f, 5.0f) + "_";
+            code += RandomGen.GetRandomNumber(-1f, 1f) + "_";
         }
         Individual individual = new Individual();
         individual.setCode(code);
@@ -122,11 +121,6 @@ public class Evolution
         NeuralNetwork neuralNetwork = new NeuralNetwork(generation[index].getCode());
         index++;
         return neuralNetwork;
-    }
-
-    public float GetRandomNumber(float minimum, float maximum)
-    {
-        return (float)random.NextDouble() * (maximum - minimum) + minimum;
     }
 
     public void setDistance(float distance)
